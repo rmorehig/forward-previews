@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: tinybird'
+        working-directory: './tinybird'
     services:
       tinybird:
         image: tinybirdco/tinybird-local:beta
