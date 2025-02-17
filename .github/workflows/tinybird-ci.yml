@@ -44,26 +44,3 @@ jobs:
       TB_TOKEN: ${{ secrets.TB_TOKEN }}
       TB_USER_TOKEN: ${{ secrets.TB_USER_TOKEN }}
       TB_HOST: ${{ secrets.TB_HOST }}
-
-  cleanup:
-    needs: ci
-    if: github.event_name == 'push'
-    runs-on: ubuntu-latest
-    defaults:
-      run:
-        working-directory: './tinybird'
-    steps:
-      - uses: actions/checkout@v3
-        with:
-          fetch-depth: 2
-      - name: Get previous commit SHA
-        id: get-prev-sha
-        run: echo "sha=$(git rev-parse HEAD^)" >> $GITHUB_OUTPUT
-      - name: Install Tinybird CLI
-        run: curl -LsSf https://api.tinybird.co/static/install.sh | sh
-      - name: Remove previous preview workspace
-        run: tb --cloud workspace delete tb_${{ steps.get-prev-sha.outputs.sha }} --yes --user_token $TB_USER_TOKEN
-    env:
-      TB_TOKEN: ${{ secrets.TB_TOKEN }}
-      TB_USER_TOKEN: ${{ secrets.TB_USER_TOKEN }}
-      TB_HOST: ${{ secrets.TB_HOST }}
