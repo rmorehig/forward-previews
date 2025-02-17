@@ -39,8 +39,9 @@ jobs:
       - name: Use new workspace
         run: tb --cloud workspace use tb_${{ github.sha }}
       - name: Deploy resources
-        run: tb --cloud deploy
+        run: TB_TOKEN="" tb --cloud deploy
     env:
+      TB_TOKEN: ${{ secrets.TB_TOKEN }}
       TB_USER_TOKEN: ${{ secrets.TB_USER_TOKEN }}
       TB_HOST: ${{ secrets.TB_HOST }}
 
