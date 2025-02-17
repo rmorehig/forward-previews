@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: './tinybird'
+        working-directory: ./tinybird
     services:
       tinybird:
         image: tinybirdco/tinybird-local:beta
@@ -45,7 +45,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: './tinybird'
+        working-directory: ./tinybird
     steps:
       - name: Install Tinybird CLI
         run: curl -LsSf https://api.tinybird.co/static/install.sh | sh
