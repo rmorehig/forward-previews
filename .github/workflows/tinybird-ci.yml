@@ -1,4 +1,3 @@
-
 name: Tinybird - CI Workflow
 
 on:
@@ -37,8 +36,23 @@ jobs:
         run: tb --cloud workspace create ${{ github.sha }} --user_token $TB_USER_TOKEN
       - name: Deploy resources
         run: tb --cloud deploy
-      - name: send mock data to preview workspace
-        run: tb --cloud datasource append analytics_events fixtures/analytics_events.njson
+    env:
+      TB_TOKEN: ${{ secrets.TB_TOKEN }}
+      TB_USER_TOKEN: ${{ secrets.TB_USER_TOKEN }}
+      TB_HOST: ${{ secrets.TB_HOST }}
+
+  cleanup:
+    needs: ci
+    if: always()  # This ensures the cleanup runs even if ci job fails
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: './tinybird'
+    steps:
+      - name: Install Tinybird CLI
+        run: curl -LsSf https://api.tinybird.co/static/install.sh | sh
+      - name: Remove preview workspace
+        run: tb --cloud workspace delete ${{ github.sha }} --yes --user_token $TB_USER_TOKEN
     env:
       TB_TOKEN: ${{ secrets.TB_TOKEN }}
       TB_USER_TOKEN: ${{ secrets.TB_USER_TOKEN }}
