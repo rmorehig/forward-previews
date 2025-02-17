@@ -1,0 +1,22 @@
+
+DESCRIPTION >
+    Web analytics events tracking for Next.js application
+
+SCHEMA >
+    `timestamp` DateTime `json:$.timestamp`,
+    `session_id` String `json:$.session_id`,
+    `event_type` String `json:$.event_type`,
+    `page_url` String `json:$.page_url`,
+    `referrer` String `json:$.referrer`,
+    `user_agent` String `json:$.user_agent`,
+    `country` String `json:$.country`,
+    `city` String `json:$.city`,
+    `device_type` String `json:$.device_type`,
+    `os` String `json:$.os`,
+    `browser` String `json:$.browser`,
+    `duration` Int32 `json:$.duration`,
+    `client_timestamp` DateTime `json:$.client_timestamp`
+
+ENGINE "MergeTree"
+ENGINE_PARTITION_KEY "toYYYYMM(timestamp)"
+ENGINE_SORTING_KEY "timestamp, session_id, event_type"

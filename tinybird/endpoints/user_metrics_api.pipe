@@ -1,0 +1,25 @@
+
+DESCRIPTION >
+    API endpoint to retrieve user device and browser metrics
+
+NODE user_metrics_node
+SQL >
+    %
+    SELECT
+        device_type,
+        os,
+        browser,
+        count(DISTINCT session_id) as users,
+        count() as sessions
+    FROM analytics_events
+    WHERE 1=1
+    {% if defined(start_date) %}
+        AND timestamp >= {{DateTime(start_date, '2024-01-01 00:00:00')}}
+    {% end %}
+    {% if defined(end_date) %}
+        AND timestamp <= {{DateTime(end_date, '2024-12-31 23:59:59')}}
+    {% end %}
+    GROUP BY device_type, os, browser
+    ORDER BY users DESC
+
+TYPE endpoint

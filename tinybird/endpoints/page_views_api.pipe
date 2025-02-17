@@ -1,0 +1,29 @@
+
+DESCRIPTION >
+    API endpoint to retrieve page views analytics with filtering capabilities
+
+NODE page_views_node
+SQL >
+    %
+    SELECT
+        toStartOfHour(timestamp) as hour,
+        page_url,
+        count() as views,
+        count(DISTINCT session_id) as unique_visitors,
+        avg(duration) as avg_duration,
+        any(country) as country
+    FROM analytics_events
+    WHERE event_type = 'pageview'
+    {% if defined(start_date) %}
+        AND timestamp >= {{DateTime(start_date, '2024-01-01 00:00:00')}}
+    {% end %}
+    {% if defined(end_date) %}
+        AND timestamp <= {{DateTime(end_date, '2024-12-31 23:59:59')}}
+    {% end %}
+    {% if defined(page_url) %}
+        AND page_url = {{String(page_url, '/')}}
+    {% end %}
+    GROUP BY hour, page_url
+    ORDER BY hour DESC, views DESC
+
+TYPE endpoint
