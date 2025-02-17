@@ -20,7 +20,7 @@ async function getPreviewWorkspaceToken() {
   )?.token;
 }
 
-export async function tinybirdEventsClient(data: {
+export async function sendEvent(data: {
   timestamp: string;
   session_id: string;
   event_type: string;
