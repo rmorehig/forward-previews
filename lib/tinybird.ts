@@ -16,7 +16,7 @@ async function getPreviewWorkspaceToken() {
     workspaces: { name: string; token: string }[];
   };
   return data.workspaces.find(
-    (workspace) => workspace.name === process.env.VERCEL_GIT_COMMIT_SHA
+    (workspace) => workspace.name === `tb_${process.env.VERCEL_GIT_COMMIT_SHA}`
   )?.token;
 }
 
