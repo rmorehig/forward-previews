@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     defaults:
       run:
-        working-directory: '.'
+        working-directory: tinybird'
     services:
       tinybird:
         image: tinybirdco/tinybird-local:beta
@@ -33,3 +33,13 @@ jobs:
         run: tb build
       - name: Test project
         run: tb test run
+      - name: Create preview workspace
+        run: tb workspace create ${{ github.sha }}
+      - name: Deploy resources
+        run: tb --cloud deploy
+      - name: send mock data to preview workspace
+        run: tb --cloud datasource append analytics_events fixtures/analytics_events.njson
+    env:
+      TB_TOKEN: ${{ secrets.TB_TOKEN }}
+      TB_USER_TOKEN: ${{ secrets.TB_USER_TOKEN }}
+      TB_HOST: ${{ secrets.TB_HOST }}
