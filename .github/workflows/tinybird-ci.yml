@@ -34,7 +34,7 @@ jobs:
       - name: Test project
         run: tb test run
       - name: Create preview workspace
-        run: tb workspace create ${{ github.sha }}
+        run: tb --cloud workspace create ${{ github.sha }} --user_token $TB_USER_TOKEN
       - name: Deploy resources
         run: tb --cloud deploy
       - name: send mock data to preview workspace
