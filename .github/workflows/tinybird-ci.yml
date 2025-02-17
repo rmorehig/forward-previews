@@ -1,10 +1,6 @@
 name: Tinybird - CI Workflow
 
 on:
-  workflow_dispatch:
-  push:
-    branches:
-      - main
   pull_request:
     branches:
       - main
@@ -15,6 +11,7 @@ concurrency: ${{ github.workflow }}-${{ github.event.pull_request.number }}
 
 jobs:
   ci:
+    if: github.event.pull_request.merged != true
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -26,8 +23,6 @@ jobs:
           - 7181:7181
     steps:
       - uses: actions/checkout@v3
-        with:
-          fetch-depth: 2  # Need to fetch at least 2 commits to get the previous SHA
       - name: Install Tinybird CLI
         run: curl -LsSf https://api.tinybird.co/static/install.sh | sh
       - name: Build project
@@ -40,6 +35,22 @@ jobs:
         run: tb --cloud workspace use tb_${{ github.sha }}
       - name: Deploy resources
         run: TB_TOKEN="" tb --cloud deploy
+    env:
+      TB_TOKEN: ${{ secrets.TB_TOKEN }}
+      TB_USER_TOKEN: ${{ secrets.TB_USER_TOKEN }}
+      TB_HOST: ${{ secrets.TB_HOST }}
+
+  cleanup:
+    if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: './tinybird'
+    steps:
+      - name: Install Tinybird CLI
+        run: curl -LsSf https://api.tinybird.co/static/install.sh | sh
+      - name: Remove PR workspace
+        run: tb --cloud workspace delete tb_${{ github.sha }} --yes --user_token $TB_USER_TOKEN
     env:
       TB_TOKEN: ${{ secrets.TB_TOKEN }}
       TB_USER_TOKEN: ${{ secrets.TB_USER_TOKEN }}
